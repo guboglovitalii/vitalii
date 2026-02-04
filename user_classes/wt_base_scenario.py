@@ -69,7 +69,7 @@ class PurchaseFlightTicket(SequentialTaskSet): # класс с задачами 
     def uc_01_login(self):
         self.users_row = next(self.users_data)
         self.random_users_row = random.choice(self.random_users_data)
-        self.login = self.random_users_row["username"]
+        self.login = self.random_users_row["name"]
         self.password = self.random_users_row["password"]
 
 
@@ -88,6 +88,29 @@ class PurchaseFlightTicket(SequentialTaskSet): # класс с задачами 
             # debug_stream=sys.stderr
         ) as r01_01_login:
             check_http_response(r01_01_login, 'Web Tours')
+
+
+        with self.client.get(
+            '/cgi-bin/nav.pl?page=menu&in=home',
+            name="r01_02_nav_pl",
+            allow_redirects=False,
+            catch_response=True
+            # debug_stream=sys.stderr
+        ) as r01_02_nav_pl:
+            check_http_response(r01_02_nav_pl, 'Web Tours Navigation Bar')
+
+
+        with self.client.get(
+            '/cgi-bin/login.pl?intro=true',
+            name="r01_03_intro",
+            allow_redirects=False,
+            catch_response=True
+            # debug_stream=sys.stderr
+        ) as r01_03_intro:
+            check_http_response(r01_03_intro, 'Welcome to Web Tours')
+
+
+
 
 class WebToursBaseUserClass(FastHttpUser): # юзер-класс, принимающий в себя основные параметры теста
     wait_time = constant_pacing(cfg.pacing)
