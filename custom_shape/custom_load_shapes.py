@@ -9,20 +9,19 @@ class CustomLoadShape(LoadTestShape):
     def __init__(self):
         super().__init__()
         match cfg.loadshape_type:
-        case "baseline":
-        self.stages = [
-            {"duration": 60, "users": 1, "spawn_rate": 1}
-        ]
-        case "stages":
-           self.stages = [
-            {"duration": 60, "users": 10, "spawn_rate": 1},
-             {"duration": 120, "users": 20, "spawn_rate": 1},
-              {"duration": 180, "users": 30, "spawn_rate": 1},
-               {"duration": 240, "users": 40, "spawn_rate": 1},
-        ]
+            case "baseline":
+                self.stages = [
+                    {"duration": 60, "users": 1, "spawn_rate": 1}
+                ]
+            case "stages":
+                self.stages = [
+                    {"duration": 60, "users": 10, "spawn_rate": 1},
+                    {"duration": 120, "users": 20, "spawn_rate": 1},
+                    {"duration": 180, "users": 30, "spawn_rate": 1},
+                    {"duration": 240, "users": 40, "spawn_rate": 1},
+                ]
 
-
-    def tick(self): # стандартная функция локаста, взятая из документации, для работы с кастомными "Лоад-Шейпами"
+    def tick(self):  # стандартная функция локаста, взятая из документации
         run_time = self.get_run_time()
 
         for stage in self.stages:
