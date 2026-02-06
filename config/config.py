@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 class ScenarioConfig(BaseModel):
     included: bool
     weight: int
+    pacing: int
 
 """ 
     Здесь должны быть описаны классы конфигурации сценариев 
@@ -24,7 +25,6 @@ class Config(BaseSettings): # данный класс является осно�
     webtours_cancel: WebToursCancelScenarioConfig
     url: str = Field('http://localhost:1080', env = "URL")
     locust_locustfile: str = Field("./locustfile.py", env = "LOCUST_LOCUSTFILE")
-    pacing: int = Field(5, env = "PACING")
     loadshape_type: str = Field('basline', env = "LOADSHAPE_TYPE")
 
 """  

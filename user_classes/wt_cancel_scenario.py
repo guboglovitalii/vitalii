@@ -2,13 +2,16 @@ from locust import task, SequentialTaskSet, HttpUser, constant_pacing, events, F
 import sys, re, random
 from config.config import cfg, logger
 from utils.assertion import check_http_response
-from utils.non_test_methods import open_csv_file, open_random_csv_file, generateFlightDates
+from utils.non_test_methods import open_csv_file, open_random_csv_file, generateFlightDates, processCancelRequestBody
 from urllib.parse import quote_plus
 from user_classes.wt_base_scenario import PurchaseFlightTicket
 
 
 
 class Cancel(SequentialTaskSet): # класс с задачами (содержит основной сценарий)
+    headers_all = {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                    }
     def on_start(self):
         self.user_data_csv_file = './test_data/user_data.csv'
         self.flight_details_csv_file = './test_data/flight_details.csv'
@@ -21,6 +24,7 @@ class Cancel(SequentialTaskSet): # класс с задачами (содерж�
         self.random_first_last = open_random_csv_file(self.first_last_csv_file)
 
         logger.info(f"____FLIGHT DETAILS OPEN CSV: {self.random_flight_details}")
+        
 
         
         @task()
@@ -156,14 +160,47 @@ class Cancel(SequentialTaskSet): # класс с задачами (содерж�
             name="r06_03_itinerary_pl",
             allow_redirects=False,
             catch_response=True,
-            headers=self.headers,  
-            debug_stream=sys.stderr
+            headers=self.headers  
+            # debug_stream=sys.stderr
         ) as r06_03_itinerary_pl:
             check_http_response(r06_03_itinerary_pl, 'Flights List')
 
-class WebToursCancelUserClass(FastHttpUser): # юзер-класс, принимающий в себя основные параметры теста
-    wait_time = constant_pacing(cfg.pacing)
+
+        self.flight_ids =  re.findall(r'<input type="hidden" name="flightID" value="([^"]*)"', r06_03_itinerary_pl.text)
+        self.flight_nums = re.findall(r'<input type="checkbox" name="([0-9]{1,4})" value="on"', r06_03_itinerary_pl.text)
+
+        logger.info(f"___FLIGHT_IDS: {self.flight_ids}")
+        logger.info(f"___FLIGHT_NUMS: {self.flight_nums}")
+
+
+
+    
+    @task()
+    def uc_07_DeleteOneTicket(self):
+        if not self.flight_ids or not self.flight_nums:
+            logger.warning("Нет билетов для удаления")
+            return
+   
+        data_r07_01 = processCancelRequestBody(self.flight_ids, self.flight_nums)
+
+        logger.info(f"____DATA_R07_01: {data_r07_01}")
+
+        with self.client.post(
+            '/cgi-bin/itinerary.pl',
+            name="r07_01_itinerary_pl_delete",
+            allow_redirects=False,
+            catch_response=True,
+            headers={
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+            data=data_r07_01  
+            # debug_stream=sys.stderr
+        ) as r07_01_itinerary_pl_delete:
+            check_http_response(r07_01_itinerary_pl_delete, 'Flights List')
+
+class WebToursCancelUserClass(HttpUser): # юзер-класс, принимающий в себя основные параметры теста
+    wait_time = constant_pacing(cfg.webtours_cancel.pacing)
     host = cfg.url
-    tasks = [PurchaseFlightTicket]
+    
 
     tasks = [Cancel]

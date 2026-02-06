@@ -11,6 +11,6 @@ if cfg.webtours_base.included:
 
 if cfg.webtours_cancel.included:
     from user_classes.wt_cancel_scenario import WebToursCancelUserClass
-    WebToursCancelUserClass.weight = cfg.webtours_base.weight
+    WebToursCancelUserClass.weight = cfg.webtours_cancel.weight
     
     logger.info("WebToursCancelUserClass started")
