@@ -11,11 +11,15 @@ public class CountSymbols {
         Scanner scanner = new Scanner(new File("file_l3.txt"));
 
         scanner.useDelimiter("[\\s.,;:!?()\\[\\]\"'-]+");
+        
+        int totalWords = 0;
 
         while (scanner.hasNext()) {
             String word = scanner.next().toLowerCase();
 
             if (word.isEmpty()) continue;
+
+            totalWords++;
 
             if (wordCount.containsKey(word)) {
                 wordCount.put(word, wordCount.get(word) + 1);
@@ -28,8 +32,13 @@ public class CountSymbols {
 
         System.out.println("Статистика слов (алфавитный порядок):");
 
-        for (String word : wordCount.keySet()) {
-            System.out.println(word + " -> " + wordCount.get(word));
+       for (String word : wordCount.keySet()) {
+
+            int count = wordCount.get(word);
+
+            double percent = (count * 100.0) / totalWords;
+
+            System.out.printf("%s -> %.2f%%\n", word, percent);
         }
 
         int maxCount = 0;
@@ -40,11 +49,14 @@ public class CountSymbols {
             }
         }
 
-        System.out.println("\nСлова, встречающиеся чаще всего (" + maxCount + " раз):");
+        System.out.println("\nСлова, встречающиеся чаще всего:");
 
         for (String word : wordCount.keySet()) {
             if (wordCount.get(word) == maxCount) {
-                System.out.println(word);
+
+                double percent = (maxCount * 100.0) / totalWords;
+
+                System.out.printf("%s -> %.2f%%\n", word, percent);
             }
         }
     }
