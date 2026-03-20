@@ -1,5 +1,6 @@
 package lesson_N5.Controller;
 
+import lesson_N5.DTO.PersonaDto;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lesson_N5.DTO.Persona1;
-import lesson_N5.DTO.Persona1_2;
+import lesson_N5.DTO.Wrapper;
 
 @RestController
 @RequestMapping("/app/v1")
@@ -38,23 +39,40 @@ public class MockController {
     }
 
     @PostMapping("/postRequest")
-    public ResponseEntity<?> postAnswer(@RequestBody Persona1_2 request) {
-        if(request.getName() == null || request.getName().isEmpty()){ 
+    public ResponseEntity<?> postAnswer(@RequestBody Wrapper wrapper) {
+
+        PersonaDto persona1 = wrapper.getPersona1();
+        PersonaDto persona2 = wrapper.getPersona2();
+
+        if(persona1.getName() == null || persona1.getName().isEmpty()){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Ошибка: name пустой");
         }
-        if(request.getSurname() == null || request.getSurname().isEmpty()){ 
+        if(persona1.getSurname() == null || persona1.getSurname().isEmpty()){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Ошибка: surname пустой");
         }
-        if(request.getAge() == null){ 
+        if(persona1.getAge() == null){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Ошибка: age пустой");
+        }
+        if(persona2.getName() == null || persona2.getName().isEmpty()){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: name пустой");
+        }
+        if(persona2.getSurname() == null || persona2.getSurname().isEmpty()){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: surname пустой");
+        }
+        persona2.setAge(persona2.getAge()*2);
+        if(persona2.getAge() == null){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: age пустой");
         }
 
 
 
-        return ResponseEntity.ok(request);
+        return ResponseEntity.ok(wrapper);
     }
     
 }

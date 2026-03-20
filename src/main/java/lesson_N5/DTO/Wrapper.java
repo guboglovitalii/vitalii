@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Persona1_2 {
-    private String name;
-    private String surname;
-    private Integer age;
+public class Wrapper {
+    private PersonaDto persona1;
+    private PersonaDto persona2;
+
 }
