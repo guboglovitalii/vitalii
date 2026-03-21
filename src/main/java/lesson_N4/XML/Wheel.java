@@ -1,4 +1,4 @@
-package lesson_N4;
+package lesson_N4.XML;
 
 public class Wheel {
     public Wheel() {

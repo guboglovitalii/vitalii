@@ -1,4 +1,4 @@
-package lesson_N4;
+package lesson_N4.XMLAndAnotation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

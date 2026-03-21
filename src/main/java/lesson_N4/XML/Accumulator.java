@@ -1,8 +1,8 @@
-package lesson_N4;
+package lesson_N4.XML;
 
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class Accumulator {
     public Accumulator() {
     }

@@ -16,19 +16,33 @@
     <context:annotation-config/>
 
     <!-- сканирует компоненты -->
-    <context:component-scan base-package="com.example"/>
 
-    <bean id="starter" class="lesson_N4.Starter"/>
-    <bean id="sparkPlug" class="lesson_N4.SparkPlug"/>
-    <!-- <bean id="accumulator" class="lesson_N4.Accumulator"/>
-    <bean id="suspension" class="lesson_N4.Suspension"/> -->
 
-    <bean id="engine" class="lesson_N4.Engine">
+    <bean id="starter" class="lesson_N4.XML.Starter"/>
+    <bean id="sparkPlug" class="lesson_N4.XML.SparkPlug"/>
+    <bean id="hinge" class="lesson_N4.XML.Hinge"/>
+    <bean id="differential" class="lesson_N4.XML.Differential"/>
+    <bean id="accumulator" class="lesson_N4.XML.Accumulator"/>
+    <bean id="wheel" class="lesson_N4.XML.Wheel"/>
+
+    <bean id="engine" class="lesson_N4.XML.Engine">
         <constructor-arg ref="starter"/>
         <constructor-arg ref="sparkPlug"/>
     </bean>
+    <bean id="suspension" class="lesson_N4.XML.Suspension">
+        <constructor-arg ref="hinge"/>
+        <constructor-arg ref="differential"/>
+    </bean>
 
-    <context:component-scan base-package="lesson_N4"/>
+    <bean id="car" class="lesson_N4.XML.Car">
+        <constructor-arg ref="engine"/>
+        <constructor-arg ref="suspension"/>
+        <constructor-arg ref="accumulator"/>
+        <constructor-arg ref="wheel"/>
+
+    </bean>
+
+
 
    
 

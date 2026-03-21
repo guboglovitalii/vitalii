@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- XML beans -->
+    
+    <!-- включает аннотации -->
+    <context:annotation-config/>
+
+    <!-- сканирует компоненты -->
+
+
+
+<!--    <bean id="starter" class="lesson_N4.XMLAndAnotation.Starter"/>-->
+<!--    <bean id="sparkPlug" class="lesson_N4.XMLAndAnotation.SparkPlug"/>-->
+<!--    &lt;!&ndash; <bean id="accumulator" class="lesson_N4.Accumulator"/>-->
+<!--    <bean id="suspension" class="lesson_N4.Suspension"/> &ndash;&gt;-->
+
+<!--    <bean id="engine" class="lesson_N4.XMLAndAnotation.Engine">-->
+<!--        <constructor-arg ref="starter"/>-->
+<!--        <constructor-arg ref="sparkPlug"/>-->
+<!--    </bean>-->
+
+
+    <context:component-scan base-package="lesson_N4.XMLAndAnotation"/>
+
+
+</beans>

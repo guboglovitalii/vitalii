@@ -1,5 +1,4 @@
-package lesson_N4;
-
+package lesson_N4.JavaCode;
 
 
 public class Car {
@@ -14,7 +13,7 @@ public class Car {
     this.wheel = wheel;
     this.suspension = suspension;
    }
-
+    @Override
    public String toString() {
     return "Car:\n" +
                 engine + "\n" +
