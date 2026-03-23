@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lesson_N5.DTO.Persona1;
-import lesson_N5.DTO.Wrapper;
+
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/app/v1")
@@ -39,58 +41,41 @@ public class MockController {
     }
 
     @PostMapping("/postRequest")
-    public ResponseEntity<?> postAnswer(@RequestBody Wrapper wrapper) {
+    public ResponseEntity<?> postAnswer(@RequestBody PersonaDto persona) {
 
-        if (wrapper == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: тело запроса отсутствует");
+        // проверки
+        if (persona.getName() == null || persona.getName().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: name пустой");
         }
 
-        PersonaDto persona1 = wrapper.getPersona1();
-        PersonaDto persona2 = wrapper.getPersona2();
-
-        if (persona1 == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona1 отсутствует");
+        if (persona.getSurname() == null || persona.getSurname().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: surname пустой");
         }
 
-        if (persona2 == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona2 отсутствует");
+        if (persona.getAge() == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: age пустой");
         }
 
-        if (persona1.getName() == null || persona1.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona1.name пустой");
-        }
+        // Person1
+        Map<String, Object> person1 = new HashMap<>();
+        person1.put("name", persona.getName());
+        person1.put("surname", persona.getSurname());
+        person1.put("age", persona.getAge());
 
-        if (persona1.getSurname() == null || persona1.getSurname().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona1.surname пустой");
-        }
+        // Person2
+        Map<String, Object> person2 = new HashMap<>();
+        person2.put("name", persona.getSurname());
+        person2.put("surname", persona.getName());
+        person2.put("age", persona.getAge() * 2);
 
-        if (persona1.getAge() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona1.age пустой");
-        }
+        // итоговый ответ
+        Map<String, Object> response = new HashMap<>();
+        response.put("Person1", person1);
+        response.put("Person2", person2);
 
-        if (persona2.getName() == null || persona2.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona2.name пустой");
-        }
-
-        if (persona2.getSurname() == null || persona2.getSurname().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona2.surname пустой");
-        }
-
-        if (persona2.getAge() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Ошибка: persona2.age пустой");
-        }
-
-        persona2.setAge(persona2.getAge() * 2);
-
-        return ResponseEntity.ok(wrapper);
+        return ResponseEntity.ok(response);
     }
 }
