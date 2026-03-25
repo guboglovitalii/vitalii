@@ -25,9 +25,9 @@ public class KafkaMock {
         String response;
 
         try {
-            if (message.startsWith("GET")) {
+            if (message.startsWith("GET ") || message.startsWith("Get ")) {
                 response = handleGet(message);
-            } else if (message.startsWith("POST")) {
+            } else if (message.startsWith("POST ") || message.startsWith("Post ")) {
                 response = handlePost(message);
             } else {
                 response = "InternalServerError: неизвестный тип запроса";
@@ -43,13 +43,17 @@ public class KafkaMock {
     // ================= GET =================
     private String handleGet(String message) {
 
-        // пример: GET /app/v1/getRequest?id=15&name=Vitaliy
+        if (!message.startsWith("GET /app/v1/getRequest") &&
+                !message.startsWith("Get /app/v1/getRequest")) {
+            return "InternalServerError: неправильный путь GET запроса";
+        }
+
         String[] parts = message.split("\\?");
         if (parts.length < 2) {
             return "InternalServerError: неправильный GET запрос";
         }
 
-        String query = parts[1]; // id=15&name=Vitaliy
+        String query = parts[1];
         String[] params = query.split("&");
 
         Integer id = null;
@@ -57,32 +61,49 @@ public class KafkaMock {
 
         for (String param : params) {
             String[] keyValue = param.split("=");
+
+            if (keyValue.length < 2) {
+                continue;
+            }
+
             if (keyValue[0].equals("id")) {
+                if (keyValue[1].isEmpty()) {
+                    return "InternalServerError: id пустой";
+                }
                 id = Integer.parseInt(keyValue[1]);
             }
+
             if (keyValue[0].equals("name")) {
                 name = keyValue[1];
             }
         }
 
-        // валидация
-        if (id == null || id <= 10) {
+        if (id == null) {
+            return "InternalServerError: id пустой";
+        }
+
+        if (name == null || name.isEmpty()) {
+            return "InternalServerError: name пустой";
+        }
+
+        if (id <= 10) {
             return "InternalServerError: id должен быть больше 10";
         }
 
-        if (name == null || name.length() <= 5) {
+        if (name.length() <= 5) {
             return "InternalServerError: name должен быть длиннее 5 символов";
         }
 
-        // имитация getAnswer.txt
         return "Hello, " + name;
     }
 
     // ================= POST =================
     private String handlePost(String message) throws Exception {
 
-        // пример:
-        // POST /app/v1/postRequest {"name":"Igor","surname":"Sidorov","age":12}
+        if (!message.startsWith("POST /app/v1/postRequest") &&
+                !message.startsWith("Post /app/v1/postRequest")) {
+            return "InternalServerError: неправильный путь POST запроса";
+        }
 
         int jsonStart = message.indexOf("{");
         if (jsonStart == -1) {
@@ -97,18 +118,18 @@ public class KafkaMock {
         String surname = (String) body.get("surname");
         Integer age = (Integer) body.get("age");
 
-        // валидация
         if (name == null || name.isEmpty()) {
             return "InternalServerError: name пустой";
         }
+
         if (surname == null || surname.isEmpty()) {
             return "InternalServerError: surname пустой";
         }
+
         if (age == null) {
             return "InternalServerError: age пустой";
         }
 
-        // формируем ответ как в postAnswer.txt
         Map<String, Object> person1 = new HashMap<>();
         person1.put("name", name);
         person1.put("surname", surname);
